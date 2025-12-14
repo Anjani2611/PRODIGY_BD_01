@@ -1,9 +1,3 @@
-
-// ============================================
-// USER CRUD API - Node.js/Express
-// In-Memory Storage with HashMap
-// ============================================
-
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const app = express();
