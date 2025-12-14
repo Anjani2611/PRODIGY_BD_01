@@ -2,227 +2,288 @@
 REST API with CRUD operations for users management.
 
 # Users REST API - CRUD Operations
+A production-ready REST API built with Node.js and Express, implementing complete CRUD operations with in-memory storage and comprehensive validation.
 
-A fully functional REST API simulator built with vanilla JavaScript and HTML/CSS, demonstrating basic CRUD (Create, Read, Update, Delete) operations on a users resource.
+## Features
 
-##  Features
+- Full REST API - POST, GET, PUT, PATCH, DELETE
+- UUID Generation - Unique user identifiers
+- Input Validation - Email, Age, Name validation
+- Error Handling - Comprehensive error management
+- HTTP Status Codes - Proper status codes (201, 200, 400, 404, 500)
+- In-Memory Storage - HashMap-based data structure
+- Health Check - /health endpoint
+- Environment Config - PORT from environment variables
 
--  **Create** - Add new users with UUID auto-generation
--  **Read** - Fetch single user or all users
--  **Update** - Edit existing user information
--  **Delete** - Remove users from storage
--  **Validation** - Email format, age range, required fields
--  **In-Memory Storage** - HashMap-based data structure
--  **Responsive Design** - Works on all devices
--  **JSON API Responses** - View API response format
+## Tech Stack
 
-##  User Object Structure
+- Runtime: Node.js
+- Framework: Express.js
+- UUID: uuid package (RFC 4122 v4)
+- Storage: In-Memory Map
+- No Database: Demo implementation
+
+## API Endpoints
+
+### Create User
+```
+POST /users
+Content-Type: application/json
 
 {
-  "id": "550e8400-e29b-41d4-a716-446655440000",
   "name": "John Doe",
   "email": "john@example.com",
-  "age": 25,
-  "createdAt": "2025-12-15T02:25:00.000Z"
+  "age": 25
 }
-##  HTTP Status Codes
 
-| Code | Description |
-|------|-------------|
-| **201** | User created successfully |
-| **200** | Request successful (read/update/delete) |
-| **400** | Bad request (validation error) |
-| **404** | User not found |
+Response: 201 Created
+{
+  "success": true,
+  "message": "User created successfully",
+  "data": { ... },
+  "status": 201
+}
+```
 
-##  Validation Rules
+### Get All Users
+```
+GET /users
 
-- **Name**: Required, non-empty string
-- **Email**: Valid email format, must be unique
-- **Age**: Number between 1-120
-- **UUID**: Auto-generated for each user (RFC 4122 v4)
+Response: 200 OK
+{
+  "success": true,
+  "message": "Users retrieved successfully",
+  "data": [ ... ],
+  "count": 5,
+  "status": 200
+}
+```
 
-##  How to Use
+### Get Single User
+```
+GET /users/{id}
 
-### Creating a User
-1. Fill in the form fields:
-   - **Name**: User's full name
-   - **Email**: Valid email address
-   - **Age**: Number between 1-120
-2. Click **"Create User"** button
-3. View API response showing 201 status and user data
-4. Form resets automatically
+Response: 200 OK or 404 Not Found
+```
 
-### Viewing All Users
-1. Click **"Fetch All Users"** button
-2. Users displayed in table format
-3. See ID (truncated), Name, Email, Age, and Actions
-4. Each row has Edit and Delete buttons
+### Update User (Full)
+```
+PUT /users/{id}
+Content-Type: application/json
 
-### Searching for a User
-1. Enter user ID in search field
-2. Click **"Search"** button
-3. View API response showing user details or 404 error
-4. Response displays in JSON format
+{
+  "name": "Updated Name",
+  "email": "updated@example.com",
+  "age": 30
+}
 
-### Editing a User
-1. Click **"Edit"** button next to user in table
-2. Form populates with user's current data
-3. Modify any fields (Name, Email, Age)
-4. Click **"Update User"** button
-5. View 200 status response with updated data
+Response: 200 OK
+```
 
-### Deleting a User
-1. Click **"Delete"** button next to user
-2. Confirm deletion in popup dialog
-3. View 200 status response
-4. User removed from table and stats updated
+### Partial Update
+```
+PATCH /users/{id}
+Content-Type: application/json
 
-### Resetting Form
-- Click **"Reset Form"** button to clear all fields
-- Button label reverts to "Create User"
+{
+  "name": "Updated Name"
+}
 
-##  API Endpoints (Simulated)
+Response: 200 OK
+```
 
+### Delete User
+```
+DELETE /users/{id}
 
-POST   /api/users          - Create new user
-GET    /api/users          - Get all users
-GET    /api/users/{id}     - Get specific user
-PUT    /api/users/{id}     - Update user
-DELETE /api/users/{id}     - Delete user
+Response: 200 OK
+{
+  "success": true,
+  "message": "User deleted successfully",
+  "status": 200
+}
+```
 
+### Health Check
+```
+GET /health
 
-##  Tech Stack
+Response: 200 OK
+{
+  "success": true,
+  "message": "API is running",
+  "status": 200,
+  "timestamp": "2025-12-15T..."
+}
+```
 
-- **Frontend**: HTML5, CSS3, Vanilla JavaScript (ES6+)
-- **Storage**: In-Memory HashMap (JavaScript Map)
-- **Architecture**: Client-side only, no backend required
-- **No Dependencies**: Pure vanilla implementation
+## Validation Rules
 
-##  Project Structure
+| Field | Rules |
+|-------|-------|
+| Name | Required, non-empty string, max 100 chars |
+| Email | Required, valid email format, unique |
+| Age | Required, integer between 1-149 |
+| ID | Auto-generated UUID (RFC 4122 v4) |
+
+## HTTP Status Codes
+
+| Code | Meaning |
+|------|---------|
+| 201 | User created successfully |
+| 200 | Request successful (GET/PUT/DELETE) |
+| 400 | Bad request (validation error) |
+| 404 | User not found |
+| 500 | Internal server error |
+
+## Installation & Running
+
+### Prerequisites
+- Node.js (v14 or higher)
+- npm
+
+### Setup
+```bash
+# Clone repository
+git clone https://github.com/YOUR_USERNAME/users-rest-api.git
+cd users-rest-api
+
+# Install dependencies
+npm install
+
+# Start server
+npm start
+
+# Server runs on http://localhost:3000
+```
+
+### Development
+```bash
+# Run with nodemon (auto-reload on changes)
+npm install --save-dev nodemon
+npx nodemon server.js
+```
+
+## Testing with cURL
+
+bash
+# Create user
+curl -X POST http://localhost:3000/users \
+  -H "Content-Type: application/json" \
+  -d '{"name":"John","email":"john@example.com","age":25}'
+
+# Get all users
+curl http://localhost:3000/users
+
+# Get single user (replace {id} with actual UUID)
+curl http://localhost:3000/users/{id}
+
+# Update user
+curl -X PUT http://localhost:3000/users/{id} \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Updated Name","email":"updated@example.com","age":30}'
+
+# Partial update
+curl -X PATCH http://localhost:3000/users/{id} \
+  -H "Content-Type: application/json" \
+  -d '{"name":"New Name"}'
+
+# Delete user
+curl -X DELETE http://localhost:3000/users/{id}
+
+# Health check
+curl http://localhost:3000/health
+
+## Testing with Postman
+
+1. Import collection or create requests manually
+2. Set method: POST, GET, PUT, PATCH, DELETE
+3. URL: http://localhost:3000/users
+4. Headers: Content-Type: application/json
+5. Send request
+
+## Project Structure
 
 users-rest-api/
-├── index.html          # Main application (HTML + CSS + JS)
-├── README.md           # Documentation
-└── .gitignore          # Git ignore rules (optional)
+├── server.js              # Main Express app
+├── package.json           # Dependencies & scripts
+├── package-lock.json      # Dependency lock file
+├── .gitignore            # Git ignore rules
+├── README.md             # Documentation
+└── .env                  # Environment variables (optional)
 
+## Deployment Options
 
-##  Getting Started
+### Heroku (Recommended for learning)
+bash
+# Install Heroku CLI
+# Create Heroku app
+heroku create your-app-name
 
-### Option 1: Online (GitHub Pages)
-1. Open: `https://yourusername.github.io/users-rest-api`
-2. Start creating users immediately!
+# Deploy
+git push heroku main
 
-### Option 2: Local
-1. Download `index.html`
-2. Open in any web browser
-3. No server or dependencies required!
+# View logs
+heroku logs --tail
 
-##  Features Breakdown
+### Railway
+1. Connect GitHub repository
+2. Select server.js as start command
+3. Deploy automatically
 
-### Data Persistence
-- Data stored in JavaScript `Map` object
-- Lives in browser memory during session
-- **Note**: Data resets on page refresh (for demo purposes)
+### Render.com
+1. Connect GitHub
+2. Select Node service
+3. Deploy
 
-### Form Validation
-- Required field checking
-- Email format validation (regex: `/^[^\s@]+@[^\s@]+\.[^\s@]+$/`)
-- Age range validation (1-120)
-- Duplicate email prevention
-- Real-time error messages
+### DigitalOcean App Platform
+1. Connect GitHub
+2. Set start command: npm start
+3. Deploy
 
-### User Interface
-- Gradient header with styling
-- Card-based layout
-- Responsive grid (adapts to mobile)
-- Status messages (success/error/info)
-- JSON response display
-- Statistics card showing total users
-- Hover effects on table rows
-- Smooth scrolling on edit
-
-### API Response Format
-{
-  "status": 201,
-  "message": "User created successfully",
-  "data": {
-    "id": "uuid-string",
-    "name": "John Doe",
-    "email": "john@example.com",
-    "age": 25,
-    "createdAt": "2025-12-15T02:25:00.000Z"
-  }
-}
-
-##  Learning Resources
-
+## Learning Outcomes
 This project demonstrates:
 - RESTful API design principles
-- CRUD operations implementation
-- Form validation techniques
-- DOM manipulation and event handling
-- JSON serialization and deserialization
-- UUID generation (RFC 4122 v4)
-- State management with HashMap/Map
-- Error handling patterns
-- HTTP status codes
-- Client-side data persistence
+- CRUD operations in Node.js/Express
+- Input validation and error handling
+- HTTP methods and status codes
+- In-memory data structures (Map)
+- UUID generation
+- Middleware usage
+- Try-catch error handling
 
-##  Future Enhancements
+## Future Enhancements
+- Database integration (MongoDB/PostgreSQL)
+- JWT Authentication
+- User roles and permissions
+- API rate limiting
+- CORS support
+- Request logging (Morgan)
+- API documentation (Swagger/OpenAPI)
+- Unit tests (Jest)
+- Docker containerization
+- CI/CD pipeline
 
-- [ ] Backend API integration (Node.js/Express/Python)
-- [ ] Database persistence (MongoDB/PostgreSQL/MySQL)
-- [ ] Authentication & Authorization (JWT)
-- [ ] API documentation (Swagger/OpenAPI)
-- [ ] Unit tests (Jest/Mocha)
-- [ ] Error handling improvements
-- [ ] Pagination for large datasets
-- [ ] Search and filter functionality
-- [ ] Sorting by columns
-- [ ] Bulk operations (import/export CSV)
-- [ ] Dark mode support
-- [ ] Rate limiting simulation
+## Important Notes
 
-## Security Notes
+### Current Implementation
+- Data reset on server restart
+- No database persistence
+- Single-instance (not scalable)
+- No authentication
 
-**Current Implementation (Demo Only):**
--  No backend validation
--  No authentication
--  No data encryption
--  Client-side only
-
-**For Production Use:**
-- Add backend validation
-- Implement authentication (OAuth/JWT)
+### For Production
+- Add database (MongoDB/PostgreSQL)
+- Implement authentication (JWT)
+- Add CORS
+- Use environment variables
+- Add logging (Winston/Morgan)
+- Add unit tests
 - Use HTTPS
-- Validate input on server
-- Use secure database
-- Implement CORS properly
-- Add rate limiting
+- Implement rate limiting
 
 ## License
-
-MIT License - Feel free to use this for learning purposes, portfolio projects, or educational demonstrations.
+MIT License - Feel free to use for learning and internship projects
 
 ## Author
-
-Created as part of BTech coursework on Backend Development & REST APIs
-
-Contributing
-
-This is a learning project. Feel free to fork and enhance with additional features!
-
-Important Notes
-
-- **Data Reset**: All data clears on page refresh (in-memory only)
-- **No Persistence**: For persistent storage, integrate a backend database
-- **Single User**: Each browser session is independent
-- **Client-Side Only**: All operations happen in your browser
-
- Support
-
-For questions or issues:
-1. Check the code comments
-2. Review error messages in the UI
-3. Test with sample data
-4. Read the API response format
+Created for BTech Backend Development Internship
